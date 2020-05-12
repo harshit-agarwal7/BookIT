@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load staticfiles %}
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="{% static 'materialize/css/materialize.min.css' %}"
+          media="screen,projection"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <meta charset="UTF-8">
+    <style>
+        body {
+            background: url("/static/images/general-bkg.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        #search {
+            border: 2px solid #1f3034;
+            background-color: white;
+        }
+
+    </style>
+    <title>Home</title>
+</head>
+<body>
+<nav>
+    <div class="nav-wrapper" style="background-color: #222F33;">
+        <a href="/" class="brand-logo">BookIt</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+
+            {% if user.is_authenticated and backends.associated %}
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'sell_isbn_search' %}">Sell</a></li>
+                <li><a href="{% url 'my_books' %}">My Books</a></li>
+                <li><a href="{% url 'complaints' %}">Complaints</a></li>
+
+            {% else %}
+                <!-- Log In option shown only when the user is not logged in -->
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'social:begin' 'google-oauth2' %}?next=/">Login</a></li>
+                <li><a href="{% url 'social:begin' 'google-oauth2' %}?next=/sell_isbn">Sell</a></li>
+                <li><a href="{% url 'social:begin' 'google-oauth2' %}?next=/my_books">My Books</a></li>
+                <li><a href="{% url 'social:begin' 'google-oauth2' %}?next=/complaints">Complaints</a></li>
+            {% endif %}
+
+        </ul>
+    </div>
+</nav>
+<br/>
+<div class="row center">
+    <form class="col s6 " action="{% url 'book_search' %}" method="POST">
+        {% csrf_token %}
+
+        <div class="row" id="search">
+            <div class="input-field col s8">
+                <i class="material-icons prefix">search</i>
+                <input placeholder="Search for a Book" id="book_query" type="text" class="validate"
+                       name="book_query">
+            </div>
+            <br/>
+            <button class="waves-effect waves-light btn" type="submit" style="background: #1f3034">Search</button>
+        </div>
+    </form>
+    <br/>
+    <form action="{% url 'book_search' %}" method="POST">
+        {% csrf_token %}
+        <div class="col s2">
+            <select class="browser-default" title="filter" name="filter" id="filter">
+                <option value="" disabled selected>Filter By:</option>
+                <option value="all" name="all" id="all">All</option>
+                <option value="fiction" name="fiction" id="fiction">Fiction</option>
+                <option value="non_fiction" name="non_fiction" id="non_fiction">Non-Fiction</option>
+                <option value="course_books" name="course_books" id="course_books">Course Books</option>
+            </select>
+        </div>
+        <div class="col s2">
+            <select class="browser-default" title="sort" name="sort" id="sort">
+                <option value="" disabled selected>Sort By:</option>
+                <option value="price_ascending" name="price_ascending" id="price_ascending">Price (Lowest to Highest)
+                </option>
+                <option value="price_descending" name="price_descending" id="price_descending">Price (Highest to
+                    Lowest)
+                </option>
+                <option value="listing_descending" name="listing_descending" id="listing_descending">Date of Listing
+                    (Newest to Oldest)
+                </option>
+                <option value="listing_ascending" name="listing_ascending" id="listing_ascending">Date of Listing
+                    (Oldest to Newest)
+                </option>
+            </select>
+        </div>
+        <div class="col s2" style="margin-left: -3em; margin-top: 0.25em">
+            <button class="waves-effect waves-light btn" type="submit"
+                    style="background: #1f3034">
+                Go
+            </button>
+        </div>
+    </form>
+</div>
+
+{% if books %}
+    <div class="row">
+        {% for item in books %}
+            <div class="col s5" style="margin-left: 5%">
+                <div class="card horizontal">
+                    <div class="card-image">
+                        <img src="{{ item.book_image }}" style="height: 305px;">
+                    </div>
+                    <div class="card-stacked">
+                        <div class="card-content">
+
+                            <p> <h5 style="font-family: Baskerville">{{ item.book_name }} </h5></p>
+                            <p>
+                                <h7 style="font-family: Baskerville">Author: {{ item.book_author }} </h7>
+                            </p>
+                            <p>
+                                <h7 style="font-family: Baskerville">Edition: {{ item.book_edition }} </h7>
+                            </p>
+                            <p>
+                                <h7 style="font-family: Baskerville">Price: Rs. {{ item.book_price }} </h7>
+                            </p>
+                            <p>
+                                <h7 style="font-family: Baskerville">Seller's Email: {{ item.seller_email }} </h7>
+                            </p>
+                            <p>
+                                <h7 style="font-family: Baskerville">Date of
+                                    Listing: {{ item.date_time_of_listing }} </h7>
+                            </p>
+
+                            <br/>
+
+                        </div>
+                        <form method="get" action={% url  'confirm' %}>
+                            {% csrf_token %}
+                            <div class="card-action">
+                                <button class="waves-effect waves-light btn" type="submit" value="{{ item.id }}"
+                                        name="buy_value"
+                                        style="background: mediumseagreen">
+                                    Buy
+                                </button>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endif %}
+<br/>
+<br/>
+
+</body>
+<script type="text/javascript" src="{% static 'materialize/js/materialize.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        $('select').material_select();
+    });
+</script>
+
+
+</html>
+

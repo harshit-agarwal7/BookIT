@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+
+{% block content %}
+    <h2>Login</h2>
+    <form method="post" action="">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Login</button>
+    </form>
+    <br>
+    {#  <p><strong>-- OR --</strong></p>#}
+    {#  <a href="{% url 'social:begin' 'google-oauth2' %}">Login with Google</a><br>#}
+
+
+    {% if request.get_full_path|slice:"7:" %}
+        <h1>Hello</h1>
+        <a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.get_full_path|slice:"12:" }}">Login with
+            Google</a><br>
+    {% else %}
+        <a href="{% url 'social:begin' 'google-oauth2' %}?next=">Login with Google</a><br>
+    {% endif %}
+
+{% endblock %}

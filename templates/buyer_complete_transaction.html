@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load staticfiles %}
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="{% static 'materialize/css/materialize.min.css' %}"
+          media="screen,projection"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <meta charset="UTF-8">
+    <style>
+        body {
+            background: url("/static/images/general-bkg.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        #search {
+            border: 2px solid #1f3034;
+            background-color: white;
+        }
+
+    </style>
+    <meta charset="UTF-8">
+    <title>BookIt</title>
+</head>
+<body>
+<nav>
+    <div class="nav-wrapper" style="background-color: #222F33;">
+        <a href="/" class="brand-logo">BookIt</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+
+            {% if user.is_authenticated and backends.associated %}
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'my_books' %}">My Books</a></li>
+                <li><a href="{% url 'complaints' %}">Complaints</a></li>
+            {% else %}
+                <!-- Log In option shown only when the user is not logged in -->
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'social:begin' 'google-oauth2' %}?next=/">Login</a></li>
+                <li><a href="{% url 'social:begin' 'google-oauth2' %}?next=/my_books">My Books</a></li>
+                <li><a href="{% url 'social:begin' 'google-oauth2' %}?next=/complaints">Complaints</a></li>
+            {% endif %}
+
+        </ul>
+    </div>
+</nav>
+<br/>
+<br/>
+<br/>
+
+<center>
+
+    {% if book %}
+
+        <div class="row">
+            <div class="col s12 m4 push-l4">
+                <div class="card">
+                    <div class="card-content">
+                        <span class="card-title">Complete Transaction: </span>
+
+
+                        <p> <h5 style="font-family: Baskerville">{{ book.book_name }} </h5></p>
+                        <p>
+                            <h7 style="font-family: Baskerville">Author: {{ book.book_author }} </h7>
+                        </p>
+                        <p>
+                            <h7 style="font-family: Baskerville">Edition: {{ book.book_edition }} </h7>
+                        </p>
+                        <p>
+                            <h7 style="font-family: Baskerville">Price: Rs. {{ book.book_price }} </h7>
+                        </p>
+                        <p>
+                            <h7 style="font-family: Baskerville">Seller's email: {{ book.seller_email }} </h7>
+                        </p>
+                    </div>
+                    <div class="card-action">
+
+                        <h5>OTP for the transaction: {{ key }}</h5>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% endif %}
+</center>
+
+</body>
+</html>

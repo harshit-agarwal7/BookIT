@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load staticfiles %}
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="{% static 'materialize/css/materialize.min.css' %}"
+          media="screen,projection"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <meta charset="UTF-8">
+    <style>
+        body {
+            background: url("/static/images/general-bkg.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        #search {
+            border: 2px solid #1f3034;
+            background-color: white;
+        }
+
+    </style>
+    <title>Sell</title>
+</head>
+<body>
+<nav>
+    <div class="nav-wrapper" style="background-color: #222F33;">
+        <a href="/" class="brand-logo">BookIt</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+
+            {% if user.is_authenticated and backends.associated %}
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'my_books' %}">My Books</a></li>
+                <li><a href="{% url 'complaints' %}">Complaints</a></li>
+            {% else %}
+                <!-- Log In option shown only when the user is not logged in -->
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'social:begin' 'google-oauth2' %}?next=/">Login</a></li>
+                <li><a href="{% url 'social:begin' 'google-oauth2' %}?next=/my_books">My Books</a></li>
+                <li><a href="{% url 'social:begin' 'google-oauth2' %}?next=/complaints">Complaints</a></li>
+            {% endif %}
+
+        </ul>
+    </div>
+</nav>
+<br/>
+
+<form action="{% url 'sell_form' %}" method="POST">
+    {% csrf_token %}
+    <div class="row" style="margin-left: 20%">
+        <div class="col s8 ">
+            <div class="card horizontal">
+                <div class="card-stacked">
+                    <span class="card-title"
+                          style="font-family: Baskerville; margin-left: 40%">List Your Book</span>
+                    <div class="card-content">
+                        <div class="input-field col s6">
+                            {% if Title %}
+                                <input name="book_name" id="book_name" type="text"
+                                       class="validate" value="{{ Title }}" disabled placeholder="{{ Title }}">
+                                <label for="book_name" data-error="wrong" data-success="right" style="margin-top: -6%">
+                                    Book Name</label>
+                                <input name="book_name_hidden" id="book_name_hidden" type="hidden" value="{{ Title }}">
+                            {% else %}
+                                <input name="book_name" id="book_name" type="text"
+                                       class="validate"
+                                       required>
+                                <label for="book_name" data-error="wrong" data-success="right" style="margin-top: -6%">Book
+                                    Name</label>
+                            {% endif %}
+                        </div>
+
+                        <div class="input-field col s6">
+                            {% if Authors %}
+                                <input placeholder="{{ Authors }}" name="book_author" id="book_author" type="text"
+                                       class="validate"
+                                       disabled value="{{ Authors }}">
+                                <label for="book_author" data-error="wrong" data-success="right"
+                                       style="margin-top: -6%">
+                                    Author</label>
+                                <input name="book_author_hidden" id="book_author_hidden" type="hidden"
+                                       value="{{ Authors }}">
+                            {% else %}
+                                <input name="book_author" id="book_author" type="text"
+                                       class="validate" required>
+                                <label for="book_author" data-error="wrong" data-success="right"
+                                       style="margin-top: -6%">Author</label>
+                            {% endif %}
+                        </div>
+                        <div class="input-field col s6">
+                            <input name="book_price" id="book_price" type="number"
+                                   class="validate" required>
+                            <label for="book_price" data-error="wrong" data-success="right"
+                                   style="margin-top: -6%">Price</label>
+                        </div>
+                        <div class="input-field col s6">
+                            <input name="book_edition" id="book_edition"
+                                   type="number"
+                                   class="validate" required>
+                            <label for="book_edition" data-error="wrong" data-success="right"
+                                   style="margin-top: -6%">Edition of Book</label>
+                        </div>
+                        <div class="input-field col s6">
+                            {% if isbn %}
+                                <input placeholder="{{ isbn }}" name="book_author" id="book_author" type="text"
+                                       class="validate"
+                                       disabled value="{{ isbn }}">
+                                <label for="book_author" data-error="wrong" data-success="right"
+                                       style="margin-top: -6%">
+                                    Enter ISBN</label>
+                                <input name="book_isbn_hidden" id="book_isbn_hidden" type="hidden" value="{{ isbn }}">
+                            {% else %}
+                                <input name="book_isbn" id="book_isbn"
+                                       type="number"
+                                       class="validate">
+                                <label for="book_isbn" data-error="wrong" data-success="right"
+                                       style="margin-top: -6%">Enter ISBN</label>
+                            {% endif %}
+                        </div>
+                        <div class="input-field col s6">
+                            <input name="book_pages" id="book_pages"
+                                   type="number"
+                                   class="validate" required>
+                            <label for="book_pages" data-error="wrong" data-success="right"
+                                   style="margin-top: -6%">Number of Pages</label>
+                        </div>
+                        <div class="input-field col s6">
+                            {% if Publisher %}
+                                <input placeholder="{{ Publisher }}" name="book_publisher" id="book_publisher"
+                                       type="text"
+                                       class="validate"
+                                       disabled value="{{ Publisher }}">
+                                <label for="book_publisher" data-error="wrong" data-success="right"
+                                       style="margin-top: -6%">
+                                    Publisher</label>
+                                <input name="book_publisher_hidden" id="book_publisher_hidden" type="hidden"
+                                       value="{{ Publisher }}">
+                            {% else %}
+                                <input name="book_publisher" id="book_publisher"
+                                       type="text"
+                                       class="validate" required>
+                                <label for="book_publisher" data-error="wrong" data-success="right"
+                                       style="margin-top: -6%">Publisher</label>
+                            {% endif %}
+                        </div>
+                        <div>
+                            <div class="col s4" style="margin-left: 7%; margin-top: 3%">
+                                <select class="browser-default" title="book_type" name="book_type" id="book_type"
+                                        required style="margin-left: -5%">
+                                    <option value="" disabled selected>Select Book Type:</option>
+                                    <option value="fiction" name="fiction" id="fiction">Fiction</option>
+                                    <option value="non_fiction" name="non_fiction" id="non_fiction">Non-Fiction
+                                    </option>
+                                    <option value="course_books" name="course_books" id="course_books">Course Book
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col s2" style="margin-top: 0.25em; margin-left: 100px">
+            <button class="waves-effect waves-light btn" type="submit"
+                    style="background: #1f3034; color: white;">
+                SUBMIT
+            </button>
+        </div>
+    </div>
+</form>
+
+</body>
+</html>

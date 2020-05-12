@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load staticfiles %}
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="{% static 'materialize/css/materialize.min.css' %}"
+          media="screen,projection"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <meta charset="UTF-8">
+    <style>
+        body {
+            background: url("/static/images/general-bkg.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+    </style>
+    <title>Complaints</title>
+</head>
+<body>
+<nav>
+    <div class="nav-wrapper" style="background-color: #222F33;">
+        <a href="/" class="brand-logo">BookIt</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+
+            {% if user.is_authenticated and backends.associated %}
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'sell_isbn_search' %}">Sell</a></li>
+                <li><a href="{% url 'my_books' %}">My Books</a></li>
+
+            {% else %}
+                <!-- Log In option shown only when the user is not logged in -->
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'social:begin' 'google-oauth2' %}?next=/">Login</a></li>
+                <li><a href="{% url 'social:begin' 'google-oauth2' %}?next=/sell_isbn">Sell</a></li>
+                <li><a href="{% url 'social:begin' 'google-oauth2' %}?next=/my_books">My Books</a></li>
+
+            {% endif %}
+
+        </ul>
+    </div>
+</nav>
+<br/>
+<form action="{% url 'complaints' %}" method="POST">
+    {% csrf_token %}
+    <div class="row" style="margin-left: 20%">
+        <div class="col s8 ">
+            <div class="card horizontal">
+                <div class="card-stacked">
+                    <span class="card-title"
+                          style="font-family: Baskerville; margin-left: 35%">Register a Complaint</span>
+                    <div class="card-content">
+
+                        <div class="input-field col s6">
+                            <input name="seller_email" id="seller_email"
+                                   type="email"
+                                   class="validate" required>
+                            <label for="seller_email" data-error="wrong" data-success="right" style="margin-top: -6%">Seller
+                                Email</label>
+                        </div>
+                        <div class="input-field col s6">
+                            <input name="book_name" id=" book_name" type="text"
+                                   class="validate" required>
+                            <label for="book_name" data-error="wrong" data-success="right" style="margin-top: -6%">Name
+                                of the book</label>
+                        </div>
+                        <div class="input-field col s6">
+                            <input name="book_isbn" id="book_isbn"
+                                   type="number"
+                                   class="validate" required>
+                            <label for="book_isbn" data-error="wrong" data-success="right" style="margin-top: -6%">ISBN
+                                of the book</label>
+                        </div>
+                        <div class="input-field col s6">
+                            <input placeholder="Please enter the date of purchase" name="purchase_date"
+                                   id="purchase_date" type="date"
+                                   class="validate" required>
+                            <label for="purchase_date" data-error="wrong" data-success="right" style="margin-top: -6%">Date
+                                of Purchase</label>
+                        </div>
+                        <div class="input-field col s6">
+                            <textarea name="complaint"
+                                      id="complaint"
+                                      class="materialize-textarea" title="complaint" required></textarea>
+                            <label for="complaint" data-error="wrong" data-success="right" style="margin-top: -6%">Nature of Complaint</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col s2" style="margin-left: 42%; margin-top: 0.25em">
+        {#    <div class="row" style="margin-left: 42%">#}
+        <button class="waves-effect waves-light btn" type="submit"
+                style="background: #1f3034; color: white">
+            SUBMIT
+        </button>
+    </div>
+</form>
+</body>
+</html>

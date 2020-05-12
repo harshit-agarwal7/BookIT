@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment</title>
+</head>
+<body>
+<nav>
+    <div class="nav-wrapper" style="background-color: #222F33;">
+        <a href="/" class="brand-logo">BookIt</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+
+            {% if user.is_authenticated and backends.associated %}
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'sell_isbn_search' %}">Sell</a></li>
+                <li><a href="{% url 'my_books' %}">My Books</a></li>
+                <li><a href="{% url 'complaints' %}">Complaints</a></li>
+            {% else %}
+                <!-- Log In option shown only when the user is not logged in -->
+                <li><a href="{% url 'social:begin' 'google-oauth2' %}?next=/">Login</a></li>
+                <li><a href="{% url 'social:begin' 'google-oauth2' %}?next=/sell_isbn">Sell</a></li>
+                <li><a href="{% url 'social:begin' 'google-oauth2' %}?next=/my_books">My Books</a></li>
+                <li><a href="{% url 'social:begin' 'google-oauth2' %}?next=/complaints">Complaints</a></li>
+            {% endif %}
+
+        </ul>
+    </div>
+</nav>
+
+
+<form action="{{ action }}" name="payuForm" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="key" value="{{ key }}"/>
+    <input type="hidden" name="hash" value="{{ hash }}"/>
+    <input type="hidden" name="txnid" value="{{ txnid }}"/>
+    <input type="hidden" name="amount" value="{{ amount }}"/>
+    <input type="hidden" name="email" value="{{ email }}"/>
+    <input type="hidden" name="firstname" value="{{ firstname }}"/>
+    <input type="hidden" name="phone" value="{{ phone }}"/>
+    <input type="hidden" name="productinfo" value="{{ productinfo }}"/>
+    <input type="hidden" name="surl" value="{{ surl }}"/>
+    <input type="hidden" name="furl" value="{{ furl }}"/>
+    <input type="hidden" name="service_provider" value="{{ service_provider }}"/>
+
+    <div class="form-group">
+        <div class="col-md-12 col-sm-12">
+            Amount : {{ amount }}
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-12 col-sm-12">
+            Purpose : {{ productinfo }}
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-12 col-sm-12">
+            Name : {{ name }}
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-12 col-sm-12">
+            Email : {{ email }}
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-12 col-sm-12">
+            Phone : {{ phone }}
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-12 col-sm-12">
+            Transaction ID : {{ txnid }}
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-12 col-sm-12" style="padding-bottom:20px;padding-top:20px;">
+            After clicking 'Pay Now' button, you will be redirected to PayUMoney Secure Gateway.
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-12 col-sm-12">
+            <input type="submit" class="btn btn-success btn-sm" value="Pay Now">
+        </div>
+    </div>
+</form>
+
+
+</body>
+</html>
